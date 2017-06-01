@@ -1,2 +1,4 @@
 .data
 *~
+get-set-test.pl
+snmp-looker.sh
