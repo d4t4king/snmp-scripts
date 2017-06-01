@@ -1,2 +1,3 @@
-# snmp-scripts
-just some basic scripts for auditing snmp
+# snmp scripts
+ just some script for auditing snmp
+
