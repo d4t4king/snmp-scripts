@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'colorize'
+require 'net/ping'
+
+File.open(ARGV[0], "r").each do |line|
+	line.chomp!
+	fields = line.split(/,/)
+	os = fields[3]
+	asset = os.split(" ")[2]
+	#puts asset
+	if asset =~ /\d+\.\d+\.\d+\.\d+/
+		# test for snmp
+		$stderr.puts asset.to_s.green
+	else
+		if fields[7].nil? || fields[7] == ""
+			$stderr.puts asset.to_s.red
+		else
+			asset = fields[7]
+			$stderr.puts asset.to_s.magenta
+		end
+	end
+	if asset.nil? || asset == ""
+		$stderr.puts os.to_s.red
+	end
+	comm_str = fields[4].split(/: /)[1]
+	puts comm_str.blue
+	output = `snmpwalk -v1 -c #{comm_str} #{asset} 1>&2`
+	if output =~ /no response/i
+		$stderr.puts "No response from host."
+	else 
+		$stderr.puts "Output Line Count: #{output.length.to_s}"
+	end
+	puts "#{os},#{asset},#{comm_str},#{output.length}"
+end
