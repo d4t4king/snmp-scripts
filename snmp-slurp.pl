@@ -9,6 +9,7 @@ use Getopt::Long;
 use Data::Dumper;
 use Net::MAC::Vendor;
 use Term::ANSIColor;
+use LWP::Simple;
 
 my ($host, $comm);
 GetOptions(
@@ -123,17 +124,23 @@ foreach my $pk (keys(%paths)) {
 	print "\t\t$pk\t$paths{$pk}\n";
 }
 
-sub lookup_mac_vendor() {
+sub lookup_mac_vendor {
 	my $_mac = shift(@_);
 	if ((defined($_mac)) && ($_mac ne "")) {
-		my $arr;
-		eval{ $arr = Net::MAC::Vendor::lookup($_mac); };
-		if ((defined($@)) && ($@ ne "")) {
-			return "Unknown or invalid MAC.";
+		#my $arr;
+		#eval{ $arr = Net::MAC::Vendor::lookup($_mac); };
+		#if ((defined($@)) && ($@ ne "")) {
+		#	return "Unknown or invalid MAC.";
+		#} else {
+		#	return $arr->[0];
+		#}
+		my $fmac = get("http://api.macvendors.com/$_mac");
+		if (!defined($fmac))
+			return "Unknown or invalid MAC address.";
 		} else {
-			return $arr->[0];
+			return $fmac;
 		}
 	} else {
-		return "Unknown or invalid MAC";
+		return "Expected MAC address to lookup.  Got nothing.";
 	}
 }
