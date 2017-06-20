@@ -135,7 +135,7 @@ sub lookup_mac_vendor {
 		#	return $arr->[0];
 		#}
 		my $fmac = get("http://api.macvendors.com/$_mac");
-		if (!defined($fmac))
+		if (!defined($fmac)) {
 			return "Unknown or invalid MAC address.";
 		} else {
 			return $fmac;
